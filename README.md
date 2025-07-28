@@ -5,6 +5,7 @@ A modern multi-tenant admin dashboard for managing users, tenants, documents, an
 ---
 
 ## Features
+
 - **Multi-tenant support**: Manage multiple organizations and their users.
 - **JWT Authentication**: Secure login and protected routes.
 - **Document Management**: Upload, view, and manage documents per tenant.
@@ -18,34 +19,40 @@ A modern multi-tenant admin dashboard for managing users, tenants, documents, an
 ## Getting Started
 
 ### 1. **Clone the repository**
+
 ```sh
 git clone https://github.com/your-username/ragnostic-admin.git
 cd ragnostic-admin
 ```
 
 ### 2. **Install dependencies**
+
 ```sh
 npm install
 ```
 
 ### 3. **Environment Variables**
+
 Create a `.env` file in the root directory. Example:
+
 ```
 VITE_API_URL=http://localhost:3001/api
 ```
-> **Note:** Never commit your `.env` file. See `.gitignore`.
 
 ### 4. **Run the development server**
+
 ```sh
 npm run dev
 ```
 
 ### 5. **Build for production**
+
 ```sh
 npm run build
 ```
 
 ### 6. **Preview production build**
+
 ```sh
 npm run preview
 ```
@@ -53,6 +60,7 @@ npm run preview
 ---
 
 ## Project Structure
+
 ```
 ├── public/                # Static assets
 ├── src/
@@ -73,13 +81,8 @@ npm run preview
 
 ---
 
-## Environment & Secrets
-- **Never commit your `.env` file or secrets.**
-- Store API keys, DB credentials, and other secrets in `.env` (local) and GitHub Secrets (for CI/CD).
-
----
-
 ## Deployment
+
 - Build the app with `npm run build`.
 - Deploy the `dist/` folder to your static hosting (Vercel, Netlify, S3, etc).
 - Set environment variables in your hosting provider.
@@ -87,6 +90,7 @@ npm run preview
 ---
 
 ## Contributing
+
 1. Fork the repo
 2. Create a feature branch
 3. Commit your changes
@@ -95,9 +99,11 @@ npm run preview
 ---
 
 ## License
+
 MIT
 
 ---
 
 ## Contact
+
 For questions or support, open an issue or contact the maintainer.
