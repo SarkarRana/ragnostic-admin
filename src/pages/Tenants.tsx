@@ -8,7 +8,7 @@ import {
   updateTenant,
   deleteTenant,
 } from "../api/tenants";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 
 export const TenantsPage = () => {
   const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -246,11 +246,11 @@ export const TenantsPage = () => {
       {isModalOpen && (
         <div className="fixed inset-0 z-[9999] overflow-y-auto">
           {/* Full-screen overlay to capture clicks */}
-          <div 
+          <div
             className="fixed inset-0 bg-black/50"
             onClick={() => setIsModalOpen(false)}
           ></div>
-          
+
           <div className="flex items-center justify-center min-h-screen px-4 py-8">
             <span
               className="hidden sm:inline-block sm:align-middle sm:h-screen"
@@ -364,11 +364,11 @@ export const TenantsPage = () => {
       {isDeleteModalOpen && selectedTenant && (
         <div className="fixed inset-0 z-[9999] overflow-y-auto">
           {/* Full-screen overlay to capture clicks */}
-          <div 
+          <div
             className="fixed inset-0 bg-black/50"
             onClick={() => setIsDeleteModalOpen(false)}
           ></div>
-          
+
           <div className="flex items-center justify-center min-h-screen px-4 py-8">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}

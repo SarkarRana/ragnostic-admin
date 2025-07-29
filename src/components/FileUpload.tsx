@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { uploadDocument } from "../api/tenant-documents";
 import { toast } from "react-hot-toast";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 
 export const FileUpload = ({ onUpload }: { onUpload: () => void }) => {
   const [isUploading, setIsUploading] = useState(false);

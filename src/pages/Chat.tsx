@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import {
   ChatSession,
   ChatMessage,
@@ -88,8 +88,6 @@ export const ChatPage = () => {
   const [isCreatingSession, setIsCreatingSession] = useState(false);
   const [newSessionName, setNewSessionName] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  // We use a temporary variable to build the assistant's message
-  const [streamBuffer, setStreamBuffer] = useState("");
   const [isAssistantTyping, setIsAssistantTyping] = useState(false);
   const { user } = useAuth();
   
@@ -242,7 +240,6 @@ export const ChatPage = () => {
     setNewMessage("");
     setIsSending(true);
     setIsAssistantTyping(true);
-    setStreamBuffer("");
 
     try {
       // Initialize for streaming
@@ -250,11 +247,16 @@ export const ChatPage = () => {
       let messageStarted = false;
 
       // Start streaming the assistant's response
-      await sendChatMessage(selectedSessionId, userMessage.content, (data) => {
+      await sendChatMessage(selectedSessionId, userMessage.content, (chunk) => {
+        let data: { delta?: { role?: string; content?: string } };
+        try {
+          data = typeof chunk === "string" ? JSON.parse(chunk) : chunk;
+        } catch {
+          data = {};
+        }
         // Check if this is the start of a new assistant message
         if (data.delta && data.delta.role === "assistant") {
           // Reset for new message
-          setStreamBuffer("");
           messageStarted = true;
           
           // Create initial assistant message (empty content)
@@ -269,26 +271,18 @@ export const ChatPage = () => {
           setMessages(prev => [...prev, initialAssistantMessage]);
         } 
         // Add content chunks to the message
-        else if (data.delta && data.delta.content && messageStarted) {
-          // Append the new content chunk
-          setStreamBuffer((prev: string) => {
-            const newContent = prev + data.delta.content!;
-            
-            // Update the assistant message in the messages array
-            setMessages(messages => {
-              const updatedMessages = [...messages];
-              // Find and update the last message if it's from the assistant
-              const lastIndex = updatedMessages.length - 1;
-              if (lastIndex >= 0 && updatedMessages[lastIndex].role === "assistant") {
-                updatedMessages[lastIndex] = {
-                  ...updatedMessages[lastIndex],
-                  content: newContent
-                };
-              }
-              return updatedMessages;
-            });
-            
-            return newContent;
+        else if (data.delta && typeof data.delta.content === "string" && messageStarted) {
+          const delta = data.delta as { content: string };
+          setMessages(messages => {
+            const updatedMessages = [...messages];
+            const lastIndex = updatedMessages.length - 1;
+            if (lastIndex >= 0 && updatedMessages[lastIndex].role === "assistant") {
+              updatedMessages[lastIndex] = {
+                ...updatedMessages[lastIndex],
+                content: updatedMessages[lastIndex].content + delta.content
+              };
+            }
+            return updatedMessages;
           });
         }
       });

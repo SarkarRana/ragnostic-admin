@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import {
   TenantDocument,
   uploadDocument,
@@ -305,11 +305,11 @@ export const TenantDocumentsPage = () => {
       {isDeleteModalOpen && selectedDocument && (
         <div className="fixed inset-0 z-[9999] overflow-y-auto">
           {/* Full-screen overlay to capture clicks */}
-          <div 
+          <div
             className="fixed inset-0 bg-black/50"
             onClick={() => setIsDeleteModalOpen(false)}
           ></div>
-          
+
           <div className="flex items-center justify-center min-h-screen px-4 py-8">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}

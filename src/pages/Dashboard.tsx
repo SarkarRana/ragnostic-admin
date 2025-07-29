@@ -3,13 +3,11 @@ import { BarChart } from "../components/Charts/BarChart";
 import { FiFile, FiDatabase, FiActivity, FiClock } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { PieChart } from "../components/Charts/PieChart";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import { getTenantDocuments, TenantDocument } from "../api/tenant-documents";
-import { getChatSessions, ChatSession } from "../api/chat-sessions";
 
 export const DashboardPage = () => {
   const [documents, setDocuments] = useState<TenantDocument[]>([]);
-  const [chatSessions, setChatSessions] = useState<ChatSession[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
@@ -21,12 +19,8 @@ export const DashboardPage = () => {
       }
 
       try {
-        const [docs, sessions] = await Promise.all([
-          getTenantDocuments(user.tenantId),
-          getChatSessions(user.tenantId, user.id),
-        ]);
+        const docs = await getTenantDocuments(user.tenantId);
         setDocuments(docs);
-        setChatSessions(sessions);
       } catch (error) {
         console.error("Failed to fetch dashboard data", error);
       } finally {
@@ -34,9 +28,8 @@ export const DashboardPage = () => {
       }
     };
     fetchData();
-  }, [user?.tenantId, user?.id]);
+  }, [user?.tenantId]);
 
-  // Calculate metrics
   // Calculate metrics
   const totalDocuments = documents.length;
   const processedDocuments = documents.filter(

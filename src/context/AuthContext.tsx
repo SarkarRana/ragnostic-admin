@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  useContext,
   useState,
   useEffect,
   ReactNode,
@@ -35,7 +34,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         // Check if token is valid
         if (isTokenValid()) {
           const currentUser = getCurrentUser();
-          setUser(currentUser);
+          if (currentUser) {
+            setUser({
+              ...currentUser,
+              role: currentUser.role === "admin" ? "admin" : "user",
+              createdAt:
+                "createdAt" in currentUser &&
+                typeof currentUser.createdAt === "string"
+                  ? currentUser.createdAt
+                  : "",
+              updatedAt:
+                "updatedAt" in currentUser &&
+                typeof currentUser.updatedAt === "string"
+                  ? currentUser.updatedAt
+                  : "",
+            });
+          } else {
+            setUser(null);
+          }
         } else {
           // If token is invalid, log the user out
           apiLogout();
@@ -56,7 +72,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setIsLoading(true);
     try {
       const response = await apiLogin({ email, password });
-      setUser(response.user);
+      const responseUser = response.user as UserWithDates;
+      setUser({
+        ...responseUser,
+        role: responseUser.role === "admin" ? "admin" : "user",
+        createdAt: responseUser.createdAt ?? "",
+        updatedAt: responseUser.updatedAt ?? "",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -82,10 +104,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
+export { AuthContext };
+
+interface UserWithDates {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: "admin" | "user";
+  tenantId: number;
+  createdAt?: string;
+  updatedAt?: string;
+}

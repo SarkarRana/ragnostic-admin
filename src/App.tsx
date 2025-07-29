@@ -14,7 +14,8 @@ import TenantDocumentsPage from "./pages/TenantDocuments";
 import ChatPage from "./pages/Chat";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider, } from "./context/AuthContext";
+import { useAuth } from "./context/useAuth";
 import { ThemeToggle } from "./components/ThemeToggle";
 import ragnosticLogo from "./assets/ragnostic.png";
 

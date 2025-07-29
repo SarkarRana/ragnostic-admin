@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { DocumentList } from "../components/DocumentList";
 import { FileUpload } from "../components/FileUpload";
 import { RAGQuery } from "../components/RAGQuery";
-import { Document } from "../types/document";
-import { toast } from "react-hot-toast";
-import { getDocuments } from "../api/documents";
+import { TenantDocument } from "../api/tenant-documents";
+import { useAuth } from "../context/useAuth";
+import { getTenantDocuments } from "../api/tenant-documents";
 
 export const DocumentsPage = () => {
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const { user } = useAuth();
+  const [documents, setDocuments] = useState<TenantDocument[]>([]);
   const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(
     null
   );
@@ -19,20 +20,22 @@ export const DocumentsPage = () => {
     const fetchDocuments = async () => {
       setLoading(true);
       try {
-        const docs = await getDocuments();
+        if (!user?.tenantId) {
+          setDocuments([]);
+          setSelectedDocumentId(null);
+          setLoading(false);
+          return;
+        }
+        const docs = await getTenantDocuments(user.tenantId);
         setDocuments(docs);
-
-        // No auto-selection - always start with no document selected
         setSelectedDocumentId(null);
-      } catch (error) {
-        toast.error("Failed to fetch documents");
       } finally {
         setLoading(false);
       }
     };
 
     fetchDocuments();
-  }, [refreshKey]);
+  }, [refreshKey, user?.tenantId]);
 
   const handleDocumentSelect = (docId: number) => {
     setSelectedDocumentId(docId);
@@ -67,7 +70,6 @@ export const DocumentsPage = () => {
           <RAGQuery
             documentId={selectedDocumentId}
             documentName={
-              documents.find((doc) => doc.id === selectedDocumentId)?.name ||
               documents.find((doc) => doc.id === selectedDocumentId)?.filename
             }
           />

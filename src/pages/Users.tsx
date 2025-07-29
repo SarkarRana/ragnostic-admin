@@ -5,7 +5,7 @@ import { User, Tenant } from "../types";
 import { getUsers, updateUser, deleteUser } from "../api/users";
 import { getTenants } from "../api/tenants";
 import { register } from "../api/auth";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 
 export const UsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);

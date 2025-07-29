@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import {
   queryDocument,
   getDocumentFileInfo,
-  DocumentFileInfo,
 } from "../api/documents";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,7 +27,6 @@ export const RAGQuery = ({ documentId, documentName }: RAGQueryProps) => {
   const [sources, setSources] = useState<Source[]>([]);
   const [isPdfOpen, setIsPdfOpen] = useState(false);
   const [hasSources, setHasSources] = useState(false);
-  const [pdfInfo, setPdfInfo] = useState<DocumentFileInfo | null>(null);
   const [pdfFilePath, setPdfFilePath] = useState<string | null>(null);
   const [loadingPdf, setLoadingPdf] = useState(false);
   const answerRef = useRef<HTMLDivElement>(null);
@@ -58,7 +56,6 @@ export const RAGQuery = ({ documentId, documentName }: RAGQueryProps) => {
       // Fetch the PDF file information from the API
       const fileInfo = await getDocumentFileInfo(documentId);
       console.log("PDF file info fetched:", fileInfo);
-      setPdfInfo(fileInfo);
 
       // Use the fileUrl (web-accessible path) instead of filePath
       if (fileInfo.fileUrl) {
@@ -91,7 +88,6 @@ export const RAGQuery = ({ documentId, documentName }: RAGQueryProps) => {
     setAnswer(""); // Reset the answer before starting a new query
     setSources([]); // Reset sources
     setHasSources(false);
-    setPdfInfo(null); // Reset PDF info
     setPdfFilePath(null); // Reset PDF file path
     setHasResult(true);
 
