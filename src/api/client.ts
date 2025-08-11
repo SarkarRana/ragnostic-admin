@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: "https://ragnostic-backend-469683750719.europe-north2.run.app/api",
   headers: {
     "Content-Type": "application/json",
   },
